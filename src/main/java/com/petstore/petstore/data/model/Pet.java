@@ -3,6 +3,7 @@ package com.petstore.petstore.data.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -20,12 +21,13 @@ public class Pet {
 
     private String color;
 
-    @Column(unique = true)
+    @Column(unique = false)
     private String breed;
 
+    @Enumerated(EnumType.STRING)
     private Gender petSex;
 
-    @ManyToOne
-//    @JoinColumn(name = "store")
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ToString.Exclude
     private Store store;
 }
