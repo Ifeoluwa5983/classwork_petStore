@@ -14,10 +14,8 @@ import org.springframework.test.context.jdbc.Sql;
 import javax.transaction.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Slf4j
@@ -159,9 +157,7 @@ class PetRepositoryTest {
 
     @Test
     public void whenIDeletePetFromDatabase_thenPetIsDeleted(){
-        boolean result = petRepository.existsById(31);
-
-        assertThat(result).isEqualTo(true);
+        assertThat(petRepository.existsById(31)).isEqualTo(true);
 
         petRepository.deleteById(31);
 
