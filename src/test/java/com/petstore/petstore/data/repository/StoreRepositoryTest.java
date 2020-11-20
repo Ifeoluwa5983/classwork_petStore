@@ -1,5 +1,6 @@
 package com.petstore.petstore.data.repository;
 
+import com.petstore.petstore.data.model.Gender;
 import com.petstore.petstore.data.model.Pet;
 import com.petstore.petstore.data.model.Store;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,9 @@ class StoreRepositoryTest {
 
     @Autowired
     StoreRepository storeRepository;
+
+    @Autowired
+    PetRepository petRepository;
 
     @BeforeEach
     void setUp() {
@@ -70,6 +74,7 @@ class StoreRepositoryTest {
 
         log.info("store after updating", store);
     }
+
     @Test
     public void deleteStoreFromDatabase(){
         assertThat(storeRepository.existsById(23)).isTrue();
@@ -101,5 +106,38 @@ class StoreRepositoryTest {
 
         assertThat(store).isNotNull();
     }
+
+    @Test
+    @Transactional
+    @Rollback(value = false)
+    void justTest () {
+//        List<Pet> pets = petRepository.findAll();
+        Pet pet = petRepository.findById(71).orElse(null);
+
+        Store store = new Store();
+
+        store.setName("Opera Store");
+        store.setContactNumber("09032377733");
+        store.setLocation("Sabo");
+
+        storeRepository.save(store);
+
+        log.info("Store id --> {}", store.getId());
+
+        Pet bill = new Pet();
+        pet.setAge(3);
+        pet.setBreed("dog");
+        pet.setColor("blue");
+        pet.setPetSex(Gender.FEMALE);
+        pet.setName("bill");
+
+
+
+//        log.info("Pet {}", pet);
+//        Store store = storeRepository.findById(pet.getStore().getId()).orElse(null);
+//
+//        log.info("Store {}", store);
+    }
+
 
 }
