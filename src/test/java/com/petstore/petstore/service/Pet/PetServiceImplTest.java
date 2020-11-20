@@ -2,18 +2,26 @@ package com.petstore.petstore.service.Pet;
 
 import com.petstore.petstore.data.model.Pet;
 import com.petstore.petstore.data.repository.PetRepository;
+
+import com.petstore.petstore.web.exceptions.PetDoesNotExistException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import static org.junit.jupiter.api.Assertions.*;
 import  static org.mockito.Mockito.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+//@SpringBootTest
+//@Sql(scripts = {"classpath:db/insert.sql"})
 class PetServiceImplTest {
 
     @Mock
@@ -21,6 +29,9 @@ class PetServiceImplTest {
 
     @InjectMocks
     PetService petService = new PetServiceImpl();
+
+    @Autowired
+    PetService petServiceImpl;
 
     Pet testPets;
 
@@ -39,7 +50,8 @@ class PetServiceImplTest {
     }
 
     @Test
-    void mockTheFindByIdRepositoryTest(){
+    @Disabled
+    void mockTheFindByIdRepositoryTest() throws PetDoesNotExistException {
         when(petRepository.findById(41)).thenReturn(Optional.of(testPets));
         petService.findPetById(41);
         verify(petRepository, times(1)).findById(41);
@@ -47,12 +59,13 @@ class PetServiceImplTest {
 
     @Test
     void mockTheDeleteByIdRepositoryTest(){
-        doNothing().when(petRepository).deleteById(2);
-        petService.deletePetById(2);
-        verify(petRepository, times(1)).deleteById(2);
+        doNothing().when(petRepository).deleteById(31);
+        petService.deletePetById(31);
+        verify(petRepository, times(1)).deleteById(31);
     }
-    @Test
-    void mockTheUpdatePetsRepositoryTest(){
 
+    @Test
+    void whenPetWithIdDoesNotExist_thenThrowException() {
+        assertThrows(PetDoesNotExistException.class, ()-> petService.findPetById(7));
     }
 }

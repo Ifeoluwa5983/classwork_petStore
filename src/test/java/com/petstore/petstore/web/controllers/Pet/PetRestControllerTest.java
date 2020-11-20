@@ -11,7 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -24,10 +24,11 @@ class PetRestControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-
+    ObjectMapper mapper;
 
     @BeforeEach
     void setUp() {
+       mapper  = new ObjectMapper();
     }
 
     @Test
@@ -39,9 +40,6 @@ class PetRestControllerTest {
         pet.setBreed("Dog");
         pet.setAge(5);
 
-        ObjectMapper mapper = new ObjectMapper();
-
-
         this.mockMvc.perform(post("/pet/create")
                 .contentType("application/json")
                 .content(mapper.writeValueAsString(pet)))
@@ -50,4 +48,32 @@ class PetRestControllerTest {
                 .andReturn();
 
     }
+    @Test
+    void whenICallTheGetPetMethod_thenCreateAPetObject() throws Exception {
+
+        this.mockMvc.perform(get("/pet/all"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+    }
+
+    @Test
+    void whenICallTheFindMethod_thenReturnPetObject() throws Exception {
+
+        this.mockMvc.perform(get("/pet/one/7"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+    }
+
+    @Test
+    void whenICallTheDeleteMethod_thenDeleteThePetObject() throws Exception {
+
+        this.mockMvc.perform(delete("/pet/one/7"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+    }
+
+
 }

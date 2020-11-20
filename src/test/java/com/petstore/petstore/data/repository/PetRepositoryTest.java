@@ -163,4 +163,14 @@ class PetRepositoryTest {
 
         assertThat(petRepository.existsById(31)).isEqualTo(false);
     }
+
+    @Test
+    public void whenIDeletePetFromDatabaseAndPetDoesntExist_thenPetIsDeleted(){
+        try{
+            petRepository.deleteById(41);
+            assertThat(petRepository.existsById(41)).isFalse();
+        }catch (Exception ex){
+            log.info("Pet does not exist exception was thrown --> {}", ex.getMessage());
+        }
+    }
 }

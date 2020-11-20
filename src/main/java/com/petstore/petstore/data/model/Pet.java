@@ -1,5 +1,6 @@
 package com.petstore.petstore.data.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,5 +30,6 @@ public class Pet {
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @ToString.Exclude
+    @JsonIgnore
     private Store store;
 }

@@ -62,10 +62,17 @@ class StoreServiceImplTest {
         verify(storeRepository, times(1)).deleteById(2);
     }
 
-//    @Test
-//    void findAllStores () {
-//        when(storeRepository.findAll()).thenReturn( myStore);
-//        storeService.findStore();
-//        verify(storeRepository, times(1)).findAll();
-//    }
+    @Test
+    void findAllStores () {
+        when(storeRepository.findAll()).thenReturn(List.of(myStore));
+        storeService.findStore();
+        verify(storeRepository, times(1)).findAll();
+    }
+
+    @Test
+    void updateStoreByRepositoryTest(){
+        when(storeRepository.save(myStore)).thenReturn(myStore);
+        storeService.updateStore(myStore);
+        verify(storeRepository, times(1)).save(myStore);
+    }
 }
