@@ -10,6 +10,6 @@ public interface PetService {
     List<Pet> findPet();
     Pet savePet(Pet pet);
     Pet findPetById(Integer Id) throws PetDoesNotExistException;
-    Pet updatePet(Pet pet);
-    void deletePetById(Integer id);
+    Pet updatePet(Pet pet) throws PetDoesNotExistException;
+    void deletePetById(Integer id) throws PetDoesNotExistException;
 }

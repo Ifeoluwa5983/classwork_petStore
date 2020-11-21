@@ -17,7 +17,10 @@ VALUES(31, 'bill', 'blue', 'parrot', 4, 'MALE', 21),
 (51, 'loveth', 'white', 'parlour', 2, 'FEMALE', 21),
 (61, 'sally', 'green', 'cat', 2, 'FEMALE', 21),
 (71, 'ross', 'ash', 'rat', 1, 'MALE', 21),
-(81, 'mill', 'red', 'parrot', 3, 'FEMALE', 21),
-(91, 'gen', 'purple', 'dog', 5, 'MALE', 21);
+(81, 'mill', 'red', 'parrot', 3, 'FEMALE', 21);
+
+
+INSERT INTO pet(`id`, `name`, `color`, `breed`, `age`, `pet_sex`)
+VALUES(91, 'bill', 'blue', 'parrot', 4, 'MALE');
 
 SET FOREIGN_KEY_CHECKS = 1;

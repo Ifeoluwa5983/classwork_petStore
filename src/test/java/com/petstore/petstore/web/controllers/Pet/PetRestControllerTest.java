@@ -7,10 +7,12 @@ import com.petstore.petstore.data.model.Pet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -19,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureRestDocs(outputDir = "target/snippets")
 class PetRestControllerTest {
 
     @Autowired
@@ -45,6 +48,7 @@ class PetRestControllerTest {
                 .content(mapper.writeValueAsString(pet)))
                 .andDo(print())
                 .andExpect(status().isCreated())
+                .andDo(document("home"))
                 .andReturn();
 
     }
@@ -69,11 +73,12 @@ class PetRestControllerTest {
     @Test
     void whenICallTheDeleteMethod_thenDeleteThePetObject() throws Exception {
 
-        this.mockMvc.perform(delete("/pet/one/7"))
+        this.mockMvc.perform(delete("/pet/one/31"))
                 .andDo(print())
-                .andExpect(status().isOk())
+                .andExpect(status().isNoContent())
                 .andReturn();
     }
+
 
 
 }

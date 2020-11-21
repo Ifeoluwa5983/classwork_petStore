@@ -5,6 +5,7 @@ import com.petstore.petstore.data.model.Store;
 import com.petstore.petstore.service.Pet.PetService;
 import com.petstore.petstore.service.Store.StoreService;
 import com.petstore.petstore.web.exceptions.PetDoesNotExistException;
+import com.petstore.petstore.web.exceptions.StoreNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,20 +34,30 @@ public class StoreRestController {
         return new ResponseEntity<>(store, HttpStatus.CREATED);
     }
 
-    @PatchMapping("/pet/{id}")
-    public Pet deletePetFromStore (@PathVariable Integer id) throws PetDoesNotExistException {
-        Pet pet = petService.findPetById(id);
-        pet.setStore(null);
-        petService.savePet(pet);
-        return pet;
+    @PutMapping("/addpet")
+    public ResponseEntity<?> addPetToStore (@RequestParam("storeId") String storeId,
+                                @RequestParam("petId") String petId) {
+
+        log.info("Mapping pets requestt storeid--> {} petid -->{}", storeId, petId);
+        Store store;
+        try{
+            store = storeService.mapPetToStore(Integer.parseInt(storeId), Integer.parseInt(petId));
+        } catch (StoreNotFoundException | PetDoesNotExistException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+        return ResponseEntity.ok().body(store);
     }
 
-    @PostMapping("/pet")
-    public Store addPetToStore (@RequestBody Pet pet) {
+//    @PatchMapping("/pet/{id}")
+//    public Pet deletePetFromStore (@PathVariable Integer id) throws PetDoesNotExistException {
+//        Pet pet = petService.findPetById(id);
+//        pet.setStore(null);
+//        petService.savePet(pet);
+//        return pet;
+//    }
+//
 
-        Store store = storeService.mapPetToStore(23, pet);
-        return store;
-    }
 
 
 }

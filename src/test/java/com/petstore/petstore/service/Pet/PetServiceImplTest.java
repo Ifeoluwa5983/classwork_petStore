@@ -4,6 +4,7 @@ import com.petstore.petstore.data.model.Pet;
 import com.petstore.petstore.data.repository.PetRepository;
 
 import com.petstore.petstore.web.exceptions.PetDoesNotExistException;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import  static org.mockito.Mockito.*;
 
@@ -20,12 +22,16 @@ import org.springframework.test.context.jdbc.Sql;
 
 import java.util.Optional;
 
-//@SpringBootTest
-//@Sql(scripts = {"classpath:db/insert.sql"})
+@SpringBootTest
+@Sql(scripts = {"classpath:db/insert.sql"})
+@Slf4j
 class PetServiceImplTest {
 
     @Mock
     PetRepository petRepository;
+
+    @Autowired
+    PetRepository petRepositoryImpl;
 
     @InjectMocks
     PetService petService = new PetServiceImpl();
@@ -58,7 +64,7 @@ class PetServiceImplTest {
     }
 
     @Test
-    void mockTheDeleteByIdRepositoryTest(){
+    void mockTheDeleteByIdRepositoryTest() throws PetDoesNotExistException {
         doNothing().when(petRepository).deleteById(31);
         petService.deletePetById(31);
         verify(petRepository, times(1)).deleteById(31);
@@ -68,4 +74,34 @@ class PetServiceImplTest {
     void whenPetWithIdDoesNotExist_thenThrowException() {
         assertThrows(PetDoesNotExistException.class, ()-> petService.findPetById(7));
     }
+
+    @Test
+    void updatePetDetailsTest(){
+
+        Pet savedPet = petRepositoryImpl.findById(31).orElse(null);
+        log.info("Pet object --> {}", savedPet);
+        assertThat(savedPet).isNotNull();
+
+        savedPet.setAge(43);
+        petRepositoryImpl.save(savedPet);
+        log.info("Pet object saved --> {}", savedPet);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

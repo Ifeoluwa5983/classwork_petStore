@@ -4,6 +4,8 @@ import com.petstore.petstore.data.model.Pet;
 import com.petstore.petstore.data.model.Store;
 import com.petstore.petstore.data.repository.PetRepository;
 import com.petstore.petstore.data.repository.StoreRepository;
+import com.petstore.petstore.web.exceptions.PetDoesNotExistException;
+import com.petstore.petstore.web.exceptions.StoreNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,13 +51,39 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public Store mapPetToStore(Integer storeId, Pet pet) {
-        Store store = storeRepository.findById(storeId).orElse(null);
-//        Pet pet = petRepository.findById(petId).orElse(null);
+    public Store mapPetToStore(Integer storeId, Integer petId) throws StoreNotFoundException, PetDoesNotExistException {
 
-        store.addPets(pet);
-        storeRepository.save(store);
+        Store savedStore = storeRepository.findById(storeId).orElse(null);
+        if(savedStore == null){
+            throw new StoreNotFoundException("Store with thee id: "+storeId+" does not exist");
+        }
 
-        return store;
+        Pet savedPet = petRepository.findById(petId).orElse(null);
+
+        if(savedPet == null){
+            throw new PetDoesNotExistException("Pet with the id:"+petId+" does not exists");
+        }
+
+        savedPet.setStore(savedStore);
+        savedStore.addPets(savedPet);
+
+        return storeRepository.save(savedStore);
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

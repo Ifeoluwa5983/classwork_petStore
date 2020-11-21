@@ -3,6 +3,7 @@ package com.petstore.petstore.web.controllers.Pet;
 import com.petstore.petstore.data.model.Pet;
 import com.petstore.petstore.service.Pet.PetService;
 import com.petstore.petstore.service.Store.StoreService;
+import com.petstore.petstore.web.exceptions.PetDoesNotExistException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,25 +47,33 @@ public class PetRestController {
 
     @DeleteMapping("/one/{id}")
     public ResponseEntity<?> deletePetById(@PathVariable Integer id){
-        petService.deletePetById(id);
 
-        Map<String, String> data = new HashMap<>();
-        data.put("status", "success");
-        data.put("message", "Deleted pet successfully");
-        return null;
+        try{
+            petService.deletePetById(id);
+
+        }catch (PetDoesNotExistException pex){
+            return ResponseEntity.badRequest().body(pex.getMessage());
+        }
+
+        return ResponseEntity.noContent().build();
+
     }
 
-    @PatchMapping("/{id}")
-    public @ResponseBody Map<String, String> updatePetById(@RequestBody Pet pet){
-        petService.savePet(pet);
+    @PatchMapping("/one/{id}")
+    public @ResponseBody ResponseEntity updatePetById(@RequestBody Pet pet){
 
-        Map<String, String> response = new HashMap<>();
 
-        response.put("message", "Update Successfully");
-        response.put("status", "success");
-
-        return response;
+        try{
+            pet = petService.updatePet(pet);
+        } catch (PetDoesNotExistException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+        return ResponseEntity.ok().body(pet);
     }
+
+
+
+
     @GetMapping("one/{id}")
     public ResponseEntity<?> findPetById(@PathVariable Integer id) {
         log.info("Id of pet to be found --> {}", id);
